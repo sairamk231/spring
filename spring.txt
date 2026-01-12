@@ -2,20 +2,20 @@
 	What is Spring Framework
 	Spring architecture
 	Inversion of Control (IoC)
-	Dependency Injection (DI)
-	Constructor Injection
-	Setter Injection
-	Field Injection
-	Spring Container
-	BeanFactory
-	ApplicationContext
+	Dependency Injection (DI):
+		Constructor Injection
+		Setter Injection
+		Field Injection
+	Spring Container:
+		BeanFactory
+		ApplicationContext
 	Spring Beans
 	Bean definition
-	Bean scopes
-	Singleton
-	Prototype
-	Request
-	Session
+	Bean scopes:
+		Singleton
+		Prototype
+		Request
+		Session
 	Bean lifecycle
 	Lazy vs Eager initialization
 	Autowiring modes
@@ -53,71 +53,69 @@
 
 5. Spring AOP (Aspect-Oriented Programming)
 	AOP concepts
-	Aspect
-	Advice
-	Join Point
-	Pointcut
-	Weaving
+		Aspect
+		Advice
+		Join Point
+		Pointcut
+		Weaving
 
-Types of advice
-Before
-After
-After Returning
-After Throwing
-Around
-@Aspect
-@EnableAspectJAutoProxy
-AOP use cases
-Logging
-Security
-Transactions
+	Types of advice
+		Before
+		After
+		After Returning
+		After Throwing
+		Around
+	@Aspect
+	@EnableAspectJAutoProxy
+	AOP use cases
+		Logging
+		Security
+		Transactions
 
 6. Spring JDBC
-JDBC problems
-Spring JDBC advantages
-JdbcTemplate
-NamedParameterJdbcTemplate
-RowMapper
-Exception handling
-Transactions with JDBC
+	JDBC problems
+	Spring JDBC advantages
+	JdbcTemplate
+	NamedParameterJdbcTemplate
+	RowMapper
+	Exception handling
+	Transactions with JDBC
 
 7. Spring ORM
-ORM integration
-Hibernate with Spring
-JPA integration
-EntityManager
-SessionFactory
-Transaction management
+	ORM integration
+	Hibernate with Spring
+	JPA integration
+	EntityManager
+	SessionFactory
+	Transaction management
 
 8. Spring Data Access & Transactions
-Transaction management overview
-@Transactional
-Propagation types
-Isolation levels
-Rollback rules
-Declarative vs Programmatic transactions
+	Transaction management overview
+	@Transactional
+	Propagation types
+	Isolation levels
+	Rollback rules
+	Declarative vs Programmatic transactions
 
 9. Spring MVC (Web Module)
-MVC architecture
-DispatcherServlet
-Controller
-ViewResolver
-Model, ModelMap, ModelAndView
-Request handling lifecycle
-
-
-Annotations:
-@RequestMapping
-@GetMapping
-@PostMapping
-@PathVariable
-@RequestParam
-@RequestBody
-@ResponseBody
-RESTful web services
-Exception handling
-@ExceptionHandler
-@ControllerAdvice
+	MVC architecture
+	DispatcherServlet
+	Controller
+	ViewResolver
+	Model, ModelMap, ModelAndView
+	Request handling lifecycle
+	Annotations:
+		@RequestMapping
+		@GetMapping
+		@PostMapping
+		@PathVariable
+		@RequestParam
+		@RequestBody
+		@ResponseBody
+	RESTful web services
+	Exception handling:
+		@ExceptionHandler
+		@ControllerAdvice
 
 10. Spring Validation
 Bean Validation (JSR-303 / JSR-380)
@@ -179,160 +177,3 @@ Singleton bean thread safety
 How Spring manages transactions
 How AOP works internally
 Common production issues
-
-✅ Next Steps (Optional)
-If you want, I can:
-Convert this into detailed notes with code examples
-
-Provide Spring interview questions (4–6 yrs experience)
-
-Explain real-time project usage
-
-Give Spring → Spring Boot mapping
-
-Just tell me what you want next 👍
-
-is spring boot and spring boot framework are samme
-
-Yes — they are the same in normal usage. ✅
-There is no separate product called “Spring Boot Framework”.
-
-✔️ Correct Understanding
-
-Spring Boot is the official framework provided by the Spring team to simplify building Spring applications.
-
-So when people say:
-
-Spring Boot
-Spring Boot framework
-
-👉 they are referring to the same thing.
-
-🌱 Relationship Between Spring & Spring Boot
-| Term                 | Meaning                                                                            |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| **Spring Framework** | Core framework providing IoC, DI, AOP, MVC, Security, etc.                         |
-| **Spring Boot**      | A **framework built on top of Spring Framework** to simplify configuration & setup |
-🔍 Why the Confusion Happens
-
-People often say “Spring Boot Framework” because:
-Spring itself is a framework
-Boot adds automation, defaults, and tooling
-So they casually append the word framework
-But officially, the name is just Spring Boot.
-
-🧠 Key Point for Interviews
-
-❓ Is Spring Boot and Spring Boot framework same?
-✅ Yes. Spring Boot itself is a framework built on top of the Spring Framework.
-
-You can also say:
-“Spring Boot is an opinionated framework that simplifies Spring application development.”
-
-🆚 Spring Framework vs Spring Boot (Quick)
-| Aspect           | Spring Framework | Spring Boot         |
-| ---------------- | ---------------- | ------------------- |
-| Configuration    | Manual           | Auto-configured     |
-| Setup            | Complex          | Very fast           |
-| Server           | External         | Embedded            |
-| Boilerplate      | High             | Minimal             |
-| Production Ready | Extra setup      | Built-in (Actuator) |
-
-
-If you want, I can help you with:
-
-One-line interview answers
-Real-time project explanation
-Diagram-based explanation
-Trick interview questions on Spring vs Spring Boot
-
-Just tell me 👍
-
-
-🌱 Spring vs Spring Boot
-1️⃣ Spring Framework
-
-Spring is a core Java framework that provides infrastructure support for building enterprise applications.
-
-2️⃣ Spring Boot
-
-Spring Boot is a framework built on top of Spring that simplifies development by providing auto-configuration, embedded servers, and production-ready features.
-
-🔹 What is Spring?
-
-Spring focuses on flexibility and control.
-
-Main Features:
-
-Inversion of Control (IoC)
-Dependency Injection (DI)
-AOP (Aspect-Oriented Programming)
-Spring MVC (Web)
-Spring JDBC / ORM / JPA
-Spring Security
-Spring Transactions
-
-Characteristics:
-
-Manual configuration (XML / Java / annotations)
-External application server required (Tomcat, JBoss)
-More boilerplate code
-More control, less opinionated
-
-🔹 What is Spring Boot?
-
-Spring Boot focuses on simplicity and speed.
-Main Features:
-Auto-configuration
-Starter dependencies
-Embedded servers (Tomcat by default)
-Production-ready tools (Actuator)
-Opinionated defaults
-
-Characteristics:
-
-Minimal configuration
-No need for external server
-Faster project setup
-Ideal for microservices & REST APIs
-
-🆚 Spring vs Spring Boot (Comparison Table)
-| Feature          | Spring            | Spring Boot                |
-| ---------------- | ----------------- | -------------------------- |
-| Type             | Core framework    | Framework on top of Spring |
-| Configuration    | Manual            | Auto-configured            |
-| Server           | External required | Embedded                   |
-| Boilerplate      | More              | Very less                  |
-| Startup Time     | Slower            | Faster                     |
-| Microservices    | Complex           | Best choice                |
-| Production Tools | Manual            | Built-in (Actuator)        |
-
-🧠 Interview One-Line Answers
-
-What is Spring?
-👉 Spring is a Java framework that provides core infrastructure like IoC, DI, AOP, and transaction management.
-
-What is Spring Boot?
-👉 Spring Boot is a framework built on top of Spring that simplifies application development using auto-configuration and embedded servers.
-
-Is Spring Boot replacing Spring?
-👉 ❌ No. Spring Boot uses Spring internally.
-
-Can Spring Boot work without Spring?
-👉 ❌ No. Spring Boot depends on Spring Framework.
-
-✅ When to Use What?
-Use Spring:
-
-Legacy enterprise applications
-When fine-grained configuration control is needed
-XML-heavy existing systems
-
-Use Spring Boot:
-New applications
-REST APIs & microservices
-Cloud-native applications
-Faster development & deployment
-
-🔑 Final Summary
-Spring provides features. Spring Boot makes them easy to use.

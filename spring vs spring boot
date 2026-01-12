@@ -1,0 +1,118 @@
+🌱 Relationship Between Spring & Spring Boot
+| Term                 | Meaning                                                                            |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| **Spring Framework** | Core framework providing IoC, DI, AOP, MVC, Security, etc.                         |
+| **Spring Boot**      | A **framework built on top of Spring Framework** to simplify configuration & setup |
+🔍 Why the Confusion Happens
+
+People often say “Spring Boot Framework” because:
+Spring itself is a framework
+Boot adds automation, defaults, and tooling
+So they casually append the word framework
+But officially, the name is just Spring Boot.
+
+🧠 Key Point for Interviews
+
+❓ Is Spring Boot and Spring Boot framework same?
+✅ Yes. Spring Boot itself is a framework built on top of the Spring Framework.
+
+You can also say:
+“Spring Boot is an opinionated framework that simplifies Spring application development.”
+
+🆚 Spring Framework vs Spring Boot (Quick)
+| Aspect           | Spring Framework | Spring Boot         |
+| ---------------- | ---------------- | ------------------- |
+| Configuration    | Manual           | Auto-configured     |
+| Setup            | Complex          | Very fast           |
+| Server           | External         | Embedded            |
+| Boilerplate      | High             | Minimal             |
+| Production Ready | Extra setup      | Built-in (Actuator) |
+
+
+🌱 Spring vs Spring Boot
+1️⃣ Spring Framework
+
+Spring is a core Java framework that provides infrastructure support for building enterprise applications.
+
+2️⃣ Spring Boot
+
+Spring Boot is a framework built on top of Spring that simplifies development by providing auto-configuration, embedded servers, and production-ready features.
+
+🔹 What is Spring?
+
+Spring focuses on flexibility and control.
+
+Main Features:
+
+Inversion of Control (IoC)
+Dependency Injection (DI)
+AOP (Aspect-Oriented Programming)
+Spring MVC (Web)
+Spring JDBC / ORM / JPA
+Spring Security
+Spring Transactions
+
+Characteristics:
+
+Manual configuration (XML / Java / annotations)
+External application server required (Tomcat, JBoss)
+More boilerplate code
+More control, less opinionated
+
+🔹 What is Spring Boot?
+
+Spring Boot focuses on simplicity and speed.
+Main Features:
+Auto-configuration
+Starter dependencies
+Embedded servers (Tomcat by default)
+Production-ready tools (Actuator)
+Opinionated defaults
+
+Characteristics:
+
+Minimal configuration
+No need for external server
+Faster project setup
+Ideal for microservices & REST APIs
+
+🆚 Spring vs Spring Boot (Comparison Table)
+| Feature          | Spring            | Spring Boot                |
+| ---------------- | ----------------- | -------------------------- |
+| Type             | Core framework    | Framework on top of Spring |
+| Configuration    | Manual            | Auto-configured            |
+| Server           | External required | Embedded                   |
+| Boilerplate      | More              | Very less                  |
+| Startup Time     | Slower            | Faster                     |
+| Microservices    | Complex           | Best choice                |
+| Production Tools | Manual            | Built-in (Actuator)        |
+
+🧠 Interview One-Line Answers
+
+What is Spring?
+👉 Spring is a Java framework that provides core infrastructure like IoC, DI, AOP, and transaction management.
+
+What is Spring Boot?
+👉 Spring Boot is a framework built on top of Spring that simplifies application development using auto-configuration and embedded servers.
+
+Is Spring Boot replacing Spring?
+👉 ❌ No. Spring Boot uses Spring internally.
+
+Can Spring Boot work without Spring?
+👉 ❌ No. Spring Boot depends on Spring Framework.
+
+✅ When to Use What?
+Use Spring:
+Legacy enterprise applications
+When fine-grained configuration control is needed
+XML-heavy existing systems
+
+Use Spring Boot:
+New applications
+REST APIs & microservices
+Cloud-native applications
+Faster development & deployment
+
+🔑 Final Summary
+
+Spring provides features. Spring Boot makes them easy to use.

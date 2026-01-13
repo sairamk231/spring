@@ -1,0 +1,130 @@
+1. Inversion of Control (IoC)
+Definition: IoC is a design principle where the control of object creation and dependency management is shifted from the developer to the Spring IoC container.
+
+IoC Container Types:
+BeanFactory: Basic container, lazy initialization.
+ApplicationContext: Advanced container, eager initialization, supports events, internationalization, etc.
+
+Example: IoC with ApplicationContext
+// Bean class
+public class HelloWorld {
+    private String message;
+    public void setMessage(String message) { this.message = message; }
+    public void getMessage() { System.out.println("Message: " + message); }
+}
+
+// XML Configuration (beans.xml)
+<beans>
+    <bean id="helloWorld" class="com.example.HelloWorld">
+        <property name="message" value="Hello Spring IoC!" />
+    </bean>
+</beans>
+
+// Main class
+ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+HelloWorld obj = (HelloWorld) context.getBean("helloWorld");
+obj.getMessage();
+
+Output:
+Message: Hello Spring IoC!
+
+2. Dependency Injection (DI)
+Definition: DI is the technique used by Spring to provide dependencies to objects rather than creating them manually.
+
+Types of DI:
+Constructor Injection.
+Setter Injection.
+Field Injection (Annotation-based).
+
+a) Constructor Injection
+Dependencies are passed via constructor.
+Best for mandatory dependencies.
+
+public class Student {
+    private Address address;
+    public Student(Address address) { this.address = address; }
+    public void show() { System.out.println("Address: " + address.getCity()); }
+}
+
+public class Address {
+    private String city;
+    public Address(String city) { this.city = city; }
+    public String getCity() { return city; }
+}
+
+// XML
+<bean id="address" class="com.example.Address">
+    <constructor-arg value="Delhi"/>
+</bean>
+<bean id="student" class="com.example.Student">
+    <constructor-arg ref="address"/>
+</bean>
+
+// Main
+Student student = (Student) context.getBean("student");
+student.show();
+
+output:
+Address: Delhi
+-------------------------------------------------------------------------------------
+b) Setter Injection
+Dependencies are set via setter methods.
+
+Best for optional dependencies.
+public class Employee {
+    private Department dept;
+    public void setDept(Department dept) { this.dept = dept; }
+    public void show() { System.out.println("Department: " + dept.getName()); }
+}
+
+public class Department {
+    private String name;
+    public void setName(String name) { this.name = name; }
+    public String getName() { return name; }
+}
+
+// XML
+<bean id="department" class="com.example.Department">
+    <property name="name" value="IT"/>
+</bean>
+<bean id="employee" class="com.example.Employee">
+    <property name="dept" ref="department"/>
+</bean>
+
+// Main
+Employee emp = (Employee) context.getBean("employee");
+emp.show();
+
+output:
+Department: IT
+------------------------------------------------------------------------------------------
+c) Field Injection (Annotation-based)
+Dependencies injected directly into fields using annotations like @Autowired.
+
+Common in Spring Boot.
+@Component
+public class Service {
+    public void serve() { System.out.println("Service is running..."); }
+}
+
+@Component
+public class Client {
+    @Autowired
+    private Service service;
+    public void doWork() { service.serve(); }
+}
+
+// Main (Spring Boot)
+ApplicationContext context = SpringApplication.run(App.class, args);
+Client client = context.getBean(Client.class);
+client.doWork();
+
+output:
+Service is running...
+
+4. Interview Key Points
+IoC vs DI: IoC is the principle, DI is the implementation.
+Best Practice: Prefer constructor injection in Spring Boot for mandatory dependencies.
+Annotations: @Autowired, @Inject, @Resource for DI.
+Container Choice: Use ApplicationContext in modern apps.
+Real-world use: Services, Repositories, and Controllers are wired via DI in Spring Boot.

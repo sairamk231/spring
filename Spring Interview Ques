@@ -1,0 +1,61 @@
+1) What is Spring?
+  It is a lightweight, loosely coupled and integrated framework for developing enterprise applications in java.
+
+2) What are the advantages of spring framework?
+  Predefined Templates
+  Loose Coupling
+  Easy to test
+  Lightweight
+  Fast Development
+  Powerful Abstraction
+  Declarative support
+
+3) What are the modules of spring framework?
+  Test
+  Spring Core Container
+  AOP, Aspects and Instrumentation
+  Data Access/Integration
+  Web
+
+2. What is IoC (Inversion of Control)?
+Definition:
+IoC means Spring controls the creation and lifecycle of objects, not the developer.
+
+IoC Containers:-
+BeanFactory: Basic container, lazy initialization.
+ApplicationContext: Advanced container, eager initialization, supports events, internationalization, etc
+
+5) What is the role of IOC container in spring?
+IOC container is responsible to:
+create the instance
+configure the instance, and
+assemble the dependencies
+
+6) What are the types of IOC container in spring?
+There are two types of IOC containers in spring framework.
+BeanFactory
+ApplicationContext
+
+7) What is the difference between BeanFactory and ApplicationContext?
+BeanFactory is the basic container whereas ApplicationContext is the advanced container. ApplicationContext extends the BeanFactory interface.
+ApplicationContext provides more facilities than BeanFactory such as integration with spring AOP, message resource handling for i18n etc.
+
+8) Dependency Injection (DI)
+Definition: DI is a way to provide dependencies to objects rather than creating them manually.
+Types of DI:-
+Constructor Injection
+Setter Injection
+Field Injection (Annotation-based)
+
+a) Constructor Injection
+Dependencies are passed via constructor.
+Best for mandatory dependencies.
+
+b) Setter Injection
+Dependencies are set via setter methods.
+Best for optional dependencies.
+
+c) Field Injection (Annotation-based)
+Dependencies injected directly into fields using annotations like @Autowired.
+Common in Spring Boot.
+

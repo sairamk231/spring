@@ -1,0 +1,299 @@
+1️⃣ What are Spring Annotations?
+✅ Definition
+
+Spring Annotations are metadata used to configure Spring applications without XML.
+They help Spring:
+Create beans
+Inject dependencies
+Handle REST APIs
+
+Manage configuration & lifecycle
+📌 Introduced to reduce boilerplate and improve readability
+
+🔹 2️⃣ STEREOTYPE ANNOTATIONS (Bean Creation)
+These annotations tell Spring which classes should become beans.
+2.1 @Component
+Definition
+Marks a class as a Spring-managed bean
+
+Key Points
+Generic stereotype
+Auto-detected during component scan
+Parent of other stereotypes
+
+2.2 @Service
+Definition
+
+Specialized @Component used for business logic layer.
+
+@Service
+public class PaymentService {
+    public String pay() {
+        return "Payment Successful";
+    }
+}
+
+Output
+Payment Successful
+
+Why use @Service?
+✔ Better readability
+✔ Semantic meaning
+✔ AOP (transactions) applied easily
+
+2.3 @Repository
+Definition
+Used for DAO / persistence layer.
+
+@Repository
+public class UserRepository {
+    public String save() {
+        return "User Saved";
+    }
+}
+
+Output
+User Saved
+Special Feature
+
+✔ Converts DB exceptions to Spring DataAccessException
+
+2.4 @Controller
+Definition
+Used for Spring MVC controllers (returns views).
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
+}
+
+📌 Returns view name, not JSON.
+
+2.5 @RestController
+Definition
+Combination of:
+
+@Controller + @ResponseBody
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello Spring";
+    }
+}
+Output
+Hello Spring
+
+
+✔ Used for REST APIs
+✔ Returns JSON/String directly
+
+🔹 3️⃣ DEPENDENCY INJECTION ANNOTATIONS
+3.1 @Autowired
+Definition
+Injects dependency automatically by type.
+
+@Service
+public class OrderService {
+
+    @Autowired
+    private PaymentService paymentService;
+
+    public String placeOrder() {
+        return paymentService.pay();
+    }
+}
+
+Output
+Payment Successful
+
+Key Points
+Can be used on field, setter, constructor
+Constructor injection is best practice
+
+3.2 Constructor Injection (Best Practice)
+@Service
+public class OrderService {
+
+    private final PaymentService paymentService;
+
+    public OrderService(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+}
+
+✔ Immutable
+✔ Easy unit testing
+✔ Recommended by Spring team
+
+3.3 @Qualifier
+Definition
+Used when multiple beans of same type exist.
+
+@Service("upi")
+class UpiPayment {}
+
+@Service("card")
+class CardPayment {}
+
+@Autowired
+@Qualifier("upi")
+private PaymentService paymentService;
+
+Key Point
+Prevents NoUniqueBeanDefinitionException
+
+3.4 @Primary
+Definition
+Marks default bean when multiple beans exist.
+
+@Primary
+@Service
+class CardPayment {}
+
+🔹 4️⃣ CONFIGURATION ANNOTATIONS
+4.1 @Configuration
+Definition
+Marks class as Spring configuration class.
+
+@Configuration
+public class AppConfig {
+}
+
+4.2 @Bean
+Definition
+Defines a bean explicitly.
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Employee employee() {
+        return new Employee();
+    }
+}
+
+Employee emp = context.getBean(Employee.class);
+
+Output
+Employee Bean Created
+
+✔ Used for third-party classes
+✔ Custom object creation
+
+4.3 @ComponentScan
+Definition
+Tells Spring where to scan for beans.
+
+@ComponentScan("com.app")
+
+🔹 5️⃣ PROPERTY & VALUE ANNOTATIONS
+5.1 @Value
+Definition
+Injects values from application.properties.
+
+app.name=SpringApp
+
+@Value("${app.name}")
+private String appName;
+
+Output
+SpringApp
+
+5.2 @PropertySource
+@PropertySource("classpath:custom.properties")
+
+🔹 6️⃣ BEAN SCOPE & LIFECYCLE ANNOTATIONS
+6.1 @Scope
+@Component
+@Scope("prototype")
+public class PrototypeBean {}
+
+✔ prototype
+✔ singleton
+✔ request
+✔ session
+
+6.2 @Lazy
+@Component
+@Lazy
+public class LazyBean {
+    public LazyBean() {
+        System.out.println("Lazy Bean Created");
+    }
+}
+
+✔ Created only when requested
+
+6.3 @PostConstruct
+@PostConstruct
+public void init() {
+    System.out.println("Bean Initialized");
+}
+
+6.4 @PreDestroy
+@PreDestroy
+public void destroy() {
+    System.out.println("Bean Destroyed");
+}
+
+📌 Not called for prototype beans.
+
+🔹 7️⃣ WEB / REST ANNOTATIONS
+7.1 Request Mapping Annotations
+@GetMapping("/get")
+@PostMapping("/post")
+@PutMapping("/put")
+@DeleteMapping("/delete")
+
+7.2 @RequestParam
+@GetMapping("/user")
+public String user(@RequestParam String name) {
+    return name;
+}
+
+7.3 @PathVariable
+@GetMapping("/user/{id}")
+public String user(@PathVariable int id) {
+    return "ID: " + id;
+}
+
+7.4 @RequestBody
+@PostMapping("/save")
+public User save(@RequestBody User user) {
+    return user;
+}
+
+🔹 8️⃣ EXCEPTION HANDLING ANNOTATIONS
+8.1 @ExceptionHandler
+@ExceptionHandler(Exception.class)
+public String handle() {
+    return "Error occurred";
+}
+
+8.2 @RestControllerAdvice
+Definition
+Global exception handler.
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+}
+
+✔ Centralized
+✔ Clean code
+
+🔹 9️⃣ VALIDATION ANNOTATIONS
+@NotNull
+@Size(min=3, max=10)
+@Email
+
+@PostMapping("/save")
+public void save(@Valid @RequestBody User user) {}
+
+🔥 MOST ASKED INTERVIEW & TRICKY QUESTIONS

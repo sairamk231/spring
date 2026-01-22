@@ -1,0 +1,102 @@
+A Spring Bean is any object managed by the Spring IoC (Inversion of Control) container. Beans are the backbone of Spring applications, and understanding their lifecycle, scopes, and annotations is crucial for interviews. Below is a structured set of notes with examples and outputs tailored for someone with 4 years of Java + Spring Boot experience.
+
+🌱 What is a Spring Bean?
+A Spring Bean is an object instantiated, configured, and managed by the Spring IoC container.
+Beans encapsulate business logic, services, or data access layers.
+
+They can be defined via:
+XML configuration (legacy)
+Annotations (@Component, @Service, @Repository, @Controller)
+Java-based configuration (@Bean inside @Configuration classes)
+
+🔑 Bean Lifecycle
+Instantiation – Bean object created.
+Dependency Injection – Dependencies injected.
+Initialization – Custom init methods run.
+Usage – Bean is available in the application context.
+Destruction – Bean cleanup before container shutdown.
+
+🏷️ Common Bean Annotations
+| Annotation        | Layer          |
+| ----------------- | -------------- |
+| `@Component`      | Generic        |
+| `@Service`        | Business logic |
+| `@Repository`     | DAO / DB       |
+| `@Controller`     | MVC            |
+| `@RestController` | REST APIs      |
+
+@Service
+public class PaymentService {
+    public void pay() {
+        System.out.println("Payment Done");
+    }
+}
+✅ Output
+Payment Done
+📌 Interview Tip:
+@Service and @Repository are specialized @Component.
+
+🔹 Type 3: Using @Bean (Java Configuration)
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Employee employee() {
+        return new Employee();
+    }
+}
+class Employee {
+    void display() {
+        System.out.println("Employee Bean Created");
+    }
+}
+✅ Output
+Employee Bean Created
+✔ Used when:
+Class is from third-party library
+Need custom object creation logic
+
+5️⃣ Bean Naming
+@Component("empService")
+public class EmployeeService {}
+context.getBean("empService");
+📌 Default name → className with first letter lowercase
+EmployeeService → employeeService
+
+6️⃣ Bean Scope (Very Important for Interviews)
+🔹 Definition
+Scope defines how many instances of a bean are created and how long they live.
+
+🔹 Types of Scopes
+| Scope       | Description                |
+| ----------- | -------------------------- |
+| singleton   | One instance (default)     |
+| prototype   | New instance every request |
+| request     | One per HTTP request       |
+| session     | One per HTTP session       |
+| application | One per ServletContext     |
+
+1️⃣1️⃣ Important Spring Bean Interview Questions
+Q1. What is a Spring Bean?
+Object managed by Spring IoC container.
+
+Q2. Difference between BeanFactory and ApplicationContext?
+ApplicationContext is advanced and eager.
+
+Q3. Can we have multiple beans of same class?
+✅ Yes (use @Qualifier or @Primary)
+
+Q4. Is Spring Bean thread-safe?
+❌ No (depends on implementation)
+
+Q5. Is prototype bean managed fully by Spring?
+❌ Only creation, not destruction
+
+| Question                                | Answer              |
+| --------------------------------------- | ------------------- |
+| Can we inject prototype into singleton? | ✅ Yes               |
+| Is singleton one per JVM?               | ❌ One per container |
+| Can Spring manage static variables?     | ❌                   |
+| Can we create bean using `new`?         | ❌                   |
+| Can private method be `@Bean`?          | ❌                   |
+| Are beans created before main()?        | ✅ Yes               |

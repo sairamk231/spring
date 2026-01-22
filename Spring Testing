@@ -1,0 +1,286 @@
+1. SPRING TESTING OVERVIEW
+==========================
+
+1.1 Definition:
+Spring Testing provides a comprehensive framework to test Spring applications by supporting unit testing, integration testing, and end-to-end testing with minimal configuration.
+
+1.2 Why Spring Testing:
+Ensures application correctness
+Detects bugs early
+Validates Spring configuration
+Improves maintainability
+Essential for CI/CD pipelines
+
+1.3 Types of Testing in Spring:
+
+Unit Testing
+Integration Testing
+Web Layer Testing
+Repository Layer Testing
+Full Application Testing
+
+2. TESTING TOOLS & DEPENDENCIES
+=================================
+
+2.1 Spring Boot Test Starter:
+Definition:
+Provides all required testing libraries.
+spring-boot-starter-test
+
+Includes:
+JUnit 5
+Mockito
+Spring Test
+AssertJ
+Hamcrest
+
+3. UNIT TESTING
+================
+3.1 Unit Testing Definition:
+Testing individual classes or methods in isolation without loading Spring context.
+
+3.2 @Test (JUnit):
+Example:
+@Test
+void testAdd() {
+    int sum = 2 + 3;
+    assertEquals(5, sum);
+}
+
+Output:
+Test Passed
+
+3.3 Mockito (Mocking):
+Definition:
+Mockito allows mocking dependencies to isolate unit tests.
+
+Example:
+@Mock
+PaymentService paymentService;
+
+@InjectMocks
+OrderService orderService;
+
+@Test
+void testOrder() {
+    when(paymentService.pay()).thenReturn("SUCCESS");
+    assertEquals("SUCCESS", orderService.placeOrder());
+}
+
+Explanation:
+@Mock creates fake object
+@InjectMocks injects mocks
+
+Output:
+SUCCESS
+
+4. INTEGRATION TESTING
+========================
+
+4.1 Integration Testing Definition:
+Testing interaction between multiple components with Spring context loaded.
+
+4.2 @SpringBootTest:
+Example:
+@SpringBootTest
+class ApplicationTest {
+
+    @Test
+    void contextLoads() {
+        System.out.println("Context Loaded");
+    }
+}
+
+Output:
+Context Loaded
+
+Key Points:
+Loads full application context
+Slower than unit tests
+
+5. WEB LAYER TESTING
+=====================
+
+5.1 @WebMvcTest:
+Definition:
+Tests only controller layer, not service or repository.
+
+Example:
+@WebMvcTest(HelloController.class)
+class HelloControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void testHello() throws Exception {
+        mockMvc.perform(get("/hello"))
+               .andExpect(status().isOk())
+               .andExpect(content().string("Hello"));
+    }
+}
+
+Output:
+HTTP 200 OK
+Hello
+
+5.2 MockMvc:
+Definition:
+Mocks HTTP requests without starting server.
+
+Key Points:
+Fast testing
+No Tomcat startup
+
+6. SERVICE LAYER TESTING
+==========================
+
+6.1 @MockBean:
+Definition:
+Mocks Spring bean inside application context.
+
+Example:
+@SpringBootTest
+class OrderServiceTest {
+
+    @MockBean
+    private PaymentService paymentService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Test
+    void testOrder() {
+        when(paymentService.pay()).thenReturn("SUCCESS");
+        assertEquals("SUCCESS", orderService.placeOrder());
+    }
+}
+
+Output:
+SUCCESS
+
+7. REPOSITORY LAYER TESTING
+=============================
+
+7.1 @DataJpaTest:
+Definition:
+
+Tests JPA repositories only.
+
+Example:
+@DataJpaTest
+class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository repo;
+
+    @Test
+    void saveUser() {
+        User user = new User("Sai");
+        User saved = repo.save(user);
+        assertNotNull(saved.getId());
+    }
+}
+
+Output:
+User saved with ID
+
+Key Points:
+Uses in-memory DB (H2)
+Fast and isolated
+
+8. FULL APPLICATION TESTING
+==============================
+
+8.1 @SpringBootTest + RANDOM_PORT:
+Example:
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class FullAppTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    void testApi() {
+        String response = restTemplate.getForObject("/hello", String.class);
+        assertEquals("Hello", response);
+    }
+}
+
+Output:
+Hello
+
+9. TESTING EXCEPTION HANDLING
+===============================
+
+9.1 Controller Advice Test:
+@Test
+void testException() throws Exception {
+    mockMvc.perform(get("/error"))
+           .andExpect(status().isInternalServerError());
+}
+
+10. TEST PROFILES
+===================
+
+10.1 @ActiveProfiles:
+@ActiveProfiles("test")
+
+Key Points:
+Separate test config
+Uses application-test.properties
+
+11. TRANSACTIONAL TESTING
+===========================
+
+11.1 @Transactional in Tests:
+@Transactional
+@Test
+void testRollback() {
+    repo.save(new User("Test"));
+}
+
+Key Points:
+Auto rollback after test
+DB remains clean
+
+12. COMMON ASSERTIONS
+======================
+
+assertEquals()
+assertNotNull()
+assertTrue()
+assertThrows()
+
+13. SPRING TESTING BEST PRACTICES
+=================================
+
+✔ Prefer unit tests over integration tests
+✔ Use @WebMvcTest for controllers
+✔ Use @DataJpaTest for repositories
+✔ Avoid loading full context unnecessarily
+✔ Mock external services
+✔ Use test profiles
+
+14. MOST ASKED INTERVIEW QUESTIONS
+===================================
+
+14.1 Difference between @Mock and @MockBean?
+@Mock → Mockito only
+@MockBean → Spring context
+
+14.2 Difference between @SpringBootTest and @WebMvcTest?
+Full context vs Controller only
+
+14.3 Does @DataJpaTest use real DB?
+❌ No, uses in-memory DB by default.
+
+15. TRICKY INTERVIEW QUESTIONS
+| Question                                 | Answer |
+| ---------------------------------------- | ------ |
+| Is @SpringBootTest slow?                 | ✅ Yes  |
+| Does @WebMvcTest load DB?                | ❌ No   |
+| Can we mock RestTemplate?                | ✅ Yes  |
+| Does @Transactional rollback after test? | ✅ Yes  |
+| Is TestRestTemplate thread-safe?         | ❌ No   |
+| Can we test private methods?             | ❌ No   |

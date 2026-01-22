@@ -1,0 +1,239 @@
+1. SPRING CACHING OVERVIEW
+=========================
+
+1.1 Definition:
+Spring Caching is a mechanism used to store frequently accessed data temporarily in memory so that repeated method calls do not hit the database or external systems, improving performance and scalability.
+
+1.2 Why Caching is Required:
+Reduces database load
+Improves application response time
+Enhances scalability
+Avoids repeated expensive computations
+
+📌 Common use cases:
+Master data
+Configuration data
+Read-heavy APIs
+
+1.3 Cache Concept:
+Key → Identifier for cached data
+Value → Actual cached result
+Cache Store → Memory (Heap / External)
+
+2. SPRING CACHING ARCHITECTURE
+===============================
+
+2.1 Key Components:
+CacheManager
+Cache
+CacheResolver
+CacheInterceptor
+
+2.2 Spring Caching Flow:
+Client calls method
+Spring checks cache
+If cache hit → return cached value
+If cache miss → execute method
+Store result in cache
+Return result
+
+3. ENABLING SPRING CACHING
+===========================
+
+3.1 @EnableCaching:
+Definition:
+Enables annotation-driven cache management.
+
+Example:
+@SpringBootApplication
+@EnableCaching
+public class CacheApplication {
+}
+
+Key Points:
+Mandatory to enable caching
+Uses AOP internally
+
+4. CORE SPRING CACHING ANNOTATIONS
+===================================
+4.1 @Cacheable:
+Definition:
+Stores method result in cache after first execution.
+
+Example:
+@Service
+public class ProductService {
+
+    @Cacheable(value = "products", key = "#id")
+    public String getProduct(int id) {
+        System.out.println("Fetching product from DB");
+        return "Product-" + id;
+    }
+}
+
+Explanation:
+First call → DB hit
+Next calls → cached result
+
+Output:
+Fetching product from DB
+Product-1
+(second call)
+Product-1
+
+4.2 @CachePut:
+Definition:
+
+Always executes method and updates cache.
+
+Example:
+@CachePut(value = "products", key = "#id")
+public String updateProduct(int id) {
+    return "Updated-Product-" + id;
+}
+
+Output:
+Updated-Product-1
+
+Key Points:
+Used for update operations
+No cache skipping
+
+4.3 @CacheEvict:
+Definition:
+
+Removes data from cache.
+
+Example:
+@CacheEvict(value = "products", key = "#id")
+public void deleteProduct(int id) {
+    System.out.println("Product deleted");
+}
+
+Output:
+Product deleted
+
+4.4 @CacheEvict (allEntries = true):
+@CacheEvict(value = "products", allEntries = true)
+public void clearCache() {
+}
+
+✔ Clears entire cache
+
+4.5 @Caching:
+Definition:
+
+Allows multiple caching operations on a single method.
+
+Example:
+@Caching(
+    put = {@CachePut(value = "products", key = "#id")},
+    evict = {@CacheEvict(value = "productList", allEntries = true)}
+)
+public String update(int id) {
+    return "Updated-" + id;
+}
+
+5. CACHE KEYS & CONDITIONS
+===========================
+
+5.1 Cache Key:
+@Cacheable(value = "products", key = "#id")
+
+📌 Default key → all method parameters
+
+5.2 condition:
+@Cacheable(value = "products", condition = "#id > 10")
+
+✔ Cache only when condition is true
+
+5.3 unless:
+@Cacheable(value = "products", unless = "#result == null")
+
+✔ Avoid caching null values
+
+6. CACHE MANAGERS
+==================
+
+6.1 Default Cache Manager:
+Uses ConcurrentHashMap
+Suitable for simple applications
+
+6.2 Common Cache Providers:
+EhCache
+Caffeine
+Redis
+Hazelcast
+
+📌 Spring provides abstraction, not implementation.
+
+6.3 Redis Cache Example (High-Level):
+spring.cache.type=redis
+
+✔ Distributed caching
+✔ Used in microservices
+
+7. SPRING CACHING WITH SPRING BOOT
+===================================
+
+7.1 Dependencies:
+spring-boot-starter-cache
+
+7.2 application.properties:
+spring.cache.type=simple
+
+7.3 Auto Configuration:
+CacheManager auto-configured
+No XML required
+Annotation-based
+
+8. SPRING CACHING & AOP
+========================
+
+8.1 Internal Mechanism:
+Spring Caching uses AOP proxies
+Method interception occurs at runtime
+
+📌 Same limitations as AOP apply.
+
+9. COMMON CACHING PITFALLS
+===========================
+
+9.1 Self Invocation:
+this.getProduct(id); // Cache NOT applied
+❌ Cache works only via proxy
+
+9.2 Private Methods:
+❌ Caching does not work on private methods
+
+9.3 Mutable Objects:
+❌ Cached mutable objects can cause data inconsistency
+
+10. REAL-TIME BEST PRACTICES
+==============================
+
+✔ Cache read-heavy operations
+✔ Avoid caching transactional write logic
+✔ Use TTL for external caches
+✔ Prefer Redis for microservices
+✔ Use @CacheEvict on update/delete
+✔ Monitor cache size
+
+11. MOST ASKED INTERVIEW QUESTIONS
+===================================
+
+11.1 What is Spring Caching?
+Mechanism to store method results in cache to improve performance.
+
+11.2 Difference between @Cacheable and @CachePut?
+Cacheable → skip execution if cached
+CachePut → always execute
+
+11.3 Where is cache stored?
+In memory or external systems (Redis, EhCache).
+
+11.4 Does caching work with @Transactional?
+Yes, but order matters.
+
+12. TRICKY INTERVIEW QUESTIONS
+===============================

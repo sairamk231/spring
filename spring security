@@ -1,0 +1,251 @@
+1. SPRING SECURITY OVERVIEW
+===========================
+
+1.1 Definition:
+Spring Security is a powerful authentication and authorization framework that protects Spring and Spring Boot applications from unauthorized access, attacks, and security vulnerabilities.
+
+It provides:
+Authentication (Who are you?)
+Authorization (What can you access?)
+Protection against common attacks
+
+1.2 Why Spring Security:
+Industry-standard security framework
+Highly customizable
+Works with Spring MVC & Spring Boot
+Protects against CSRF, XSS, session fixation
+Supports REST, JWT, OAuth2
+
+1.3 Core Security Concepts:
+| Concept          | Meaning                 |
+| ---------------- | ----------------------- |
+| Authentication   | Verify user identity    |
+| Authorization    | Verify user permissions |
+| Principal        | Logged-in user          |
+| GrantedAuthority | User role/permission    |
+| SecurityContext  | Holds security info     |
+
+2. SPRING SECURITY ARCHITECTURE
+================================
+
+2.1 High-Level Flow:
+Client sends request
+Request goes through Security Filter Chain
+Authentication is performed
+Authorization is checked
+Request reaches controller (if allowed)
+
+2.2 Security Filter Chain:
+Definition:
+A chain of Servlet filters that handle security concerns.
+
+Important Filters:
+UsernamePasswordAuthenticationFilter
+BasicAuthenticationFilter
+ExceptionTranslationFilter
+FilterSecurityInterceptor
+
+📌 Spring Security is filter-based
+
+3. AUTHENTICATION
+==================
+
+3.1 Authentication:
+Definition:
+Process of verifying user credentials (username/password).
+
+3.2 In-Memory Authentication:
+Example:
+@Bean
+public UserDetailsService userDetailsService() {
+    UserDetails user = User.withUsername("admin")
+            .password("{noop}admin123")
+            .roles("ADMIN")
+            .build();
+    return new InMemoryUserDetailsManager(user);
+}
+
+Explanation:
+User stored in memory
+{noop} → no password encoding
+
+Output:
+Login successful with admin/admin123
+
+📌 Used only for demos/testing.
+
+3.3 Database Authentication (UserDetailsService):
+Entity:
+@Entity
+public class User {
+    @Id
+    private String username;
+    private String password;
+    private String role;
+}
+
+Service:
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return new org.springframework.security.core.userdetails.User(
+                "user",
+                "{noop}password",
+                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    }
+}
+
+Key Points:
+Loads user from DB
+Central authentication logic
+
+4. AUTHORIZATION
+=================
+
+4.1 Authorization:
+Definition:
+Process of deciding access rights for authenticated users.
+
+4.2 URL-Based Authorization:
+Example:
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+      .authorizeHttpRequests()
+      .requestMatchers("/admin/**").hasRole("ADMIN")
+      .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
+      .anyRequest().authenticated()
+      .and().httpBasic();
+    return http.build();
+}
+
+Explanation:
+/admin/** → ADMIN only
+/user/** → USER or ADMIN
+
+4.3 Method-Level Authorization:
+Enable:
+@EnableMethodSecurity
+
+Example:
+@PreAuthorize("hasRole('ADMIN')")
+public void deleteUser() {}
+
+Key Points:
+Fine-grained security
+Uses SpEL expressions
+
+5. PASSWORD ENCODING
+=====================
+
+5.1 PasswordEncoder:
+Definition:
+Encodes passwords before storing in DB.
+
+5.2 BCryptPasswordEncoder (BEST PRACTICE):
+Example:
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+
+Explanation:
+Strong hashing
+Salt included
+One-way encryption
+
+5.3 Password Encoding Flow:
+
+Raw password entered
+Encoded using PasswordEncoder
+Stored in DB
+Compared during login
+
+6. SPRING SECURITY WITH SPRING BOOT
+====================================
+
+6.1 Dependency:
+spring-boot-starter-security
+
+6.2 Default Behavior:
+All endpoints secured
+Default login page
+Default user created
+Password shown in console
+📌 Interview favorite point.
+
+7. SECURITY CONFIGURATION
+==========================
+
+7.1 Java-Based Configuration:
+Example:
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+}
+
+7.2 Disable CSRF (REST APIs):
+http.csrf().disable();
+
+📌 Required for stateless REST APIs.
+
+7.3 Permit Public APIs:
+http.authorizeHttpRequests()
+    .requestMatchers("/public/**").permitAll();
+
+8. CSRF (Cross-Site Request Forgery)
+=====================================
+
+8.1 CSRF:
+Definition:
+Attack where malicious site performs unauthorized actions using authenticated user session.
+
+8.2 CSRF Protection:
+Enabled by default
+Uses CSRF token
+Disabled for REST APIs
+
+9. SESSION MANAGEMENT
+======================
+
+9.1 Session Management:
+Example:
+http.sessionManagement()
+    .maximumSessions(1);
+
+Key points:
+Prevents multiple logins
+Avoids session fixation
+
+10. JWT AUTHENTICATION (REAL-TIME IMPORTANT)
+==============================================
+
+10.1 JWT:
+Definition:
+JSON Web Token is a stateless authentication mechanism.
+
+10.2 JWT Flow:
+User logs in
+JWT generated
+Token sent to client
+Client sends token in header
+Token validated
+
+10.3 JWT Header Example:
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+
+11. OAUTH2 (BASIC IDEA)
+========================
+
+11.1 OAuth2:
+Definition:
+Authorization framework for third-party login.
+
+Examples:
+Google login
+GitHub login
+
+12. COMMON SECURITY ANNOTATIONS
+================================

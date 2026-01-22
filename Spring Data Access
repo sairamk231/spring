@@ -1,0 +1,46 @@
+1.1 Definition:
+Spring Data Access is a part of the Spring Framework that provides consistent, simplified, and exception-safe access to data sources such as:
+Relational Databases
+ORM frameworks (JPA/Hibernate)
+JDBC
+NoSQL databases
+
+📌 Goal: Reduce boilerplate code and handle DB interactions uniformly.
+
+1.2 Why Spring Data Access:
+Eliminates repetitive JDBC code
+Unified exception hierarchy
+Easy transaction management
+Integrates with JDBC, JPA, Hibernate
+Works seamlessly with Spring Boot
+
+2. DATA ACCESS OPTIONS IN SPRING
+=================================
+
+2.1 JDBC (Spring JDBC):
+Definition:
+Spring JDBC simplifies database access using JdbcTemplate.
+
+2.2 ORM (Spring ORM):
+Supports ORM frameworks:
+JPA
+Hibernate
+MyBatis
+
+📌 Most real-time projects use Spring Data JPA.
+
+2.3 Spring Data JPA:
+
+Provides repository abstraction on top of JPA.
+✔ No DAO boilerplate
+✔ Auto-implemented CRUD methods
+
+3. SPRING JDBC (JdbcTemplate)
+==============================
+
+3.1 JdbcTemplate:
+Definition:
+JdbcTemplate is a core Spring JDBC class that handles:
+Connection creation/closing
+Statement execution
+Exception handling

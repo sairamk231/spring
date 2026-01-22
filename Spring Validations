@@ -1,0 +1,275 @@
+1. SPRING VALIDATION OVERVIEW
+
+==============================
+
+1.1 Definition:
+
+Spring Validation is a mechanism to validate user input and request data before processing business logic, ensuring data integrity, correctness, and security.
+
+Spring mainly uses:
+
+Bean Validation (JSR-303 / JSR-380)
+
+Hibernate Validator (default implementation)
+
+1.2 Why Validation is Important:
+
+Prevents invalid data from reaching business logic
+
+Reduces manual if-else checks
+
+Improves API reliability
+
+Standardized error handling
+
+Mandatory for production REST APIs
+
+2. TYPES OF VALIDATION IN SPRING
+
+=================================
+
+2.1 Bean Validation (Annotation-Based) – MOST USED:
+Uses annotations on fields
+Declarative and clean
+Integrated with Spring MVC & Spring Boot
+
+2.2 Programmatic Validation:
+Uses Validator interface
+Required for complex/custom rules
+Less common but interview-important
+
+3. BEAN VALIDATION (JSR-303 / JSR-380)
+======================================
+
+3.1 Common Validation Annotations:
+| Annotation  | Purpose                       |
+| ----------- | ----------------------------- |
+| `@NotNull`  | Value must not be null        |
+| `@NotEmpty` | Not null + not empty          |
+| `@NotBlank` | Not null + trimmed length > 0 |
+| `@Size`     | Length/size constraint        |
+| `@Min`      | Minimum numeric value         |
+| `@Max`      | Maximum numeric value         |
+| `@Email`    | Valid email format            |
+| `@Pattern`  | Regex validation              |
+| `@Positive` | Positive numbers only         |
+| `@Negative` | Negative numbers only         |
+| `@Past`     | Date must be past             |
+| `@Future`   | Date must be future           |
+
+Example:
+public class UserDto {
+
+    @NotNull
+    private Long id;
+
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String username;
+
+    @Email
+    private String email;
+
+    @Min(18)
+    private int age;
+}
+
+Explanation:
+Validates request payload automatically
+No manual checks required
+
+4. ENABLING VALIDATION
+=======================
+
+4.1 @Valid:
+Definition:
+
+Triggers validation of request object.
+
+Example:
+@PostMapping("/users")
+public String saveUser(@Valid @RequestBody UserDto user) {
+    return "User Saved";
+}
+
+Output (Valid Input):
+User Saved
+
+4.2 @Validated:
+Definition:
+
+Spring-specific validation annotation.
+Supports group validation.
+
+@Validated
+@RestController
+public class UserController {
+}
+
+📌 @Valid → basic
+📌 @Validated → advanced (groups)
+
+5. HANDLING VALIDATION ERRORS
+=============================
+
+5.1 BindingResult:
+Definition:
+
+Captures validation errors without throwing exception.
+
+Example:
+@PostMapping("/users")
+public String saveUser(
+        @Valid @RequestBody UserDto user,
+        BindingResult result) {
+
+    if (result.hasErrors()) {
+        return result.getAllErrors().toString();
+    }
+    return "User Saved";
+}
+
+Output (Invalid Input):
+[username must not be blank, age must be >= 18]
+
+5.2 MethodArgumentNotValidException:
+Definition:
+Exception thrown when validation fails and BindingResult is not used.
+
+5.3 Global Exception Handling:
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidation(MethodArgumentNotValidException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors()
+          .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+
+        return errors;
+    }
+}
+
+Output:
+{
+  "username": "must not be blank",
+  "age": "must be greater than or equal to 18"
+}
+
+6. CUSTOM VALIDATION
+=====================
+
+6.1 Custom Validation Annotation:
+Step 1: Create Annotation
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = PasswordValidator.class)
+public @interface StrongPassword {
+    String message() default "Weak password";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}
+
+Step 2: Create Validator
+public class PasswordValidator
+        implements ConstraintValidator<StrongPassword, String> {
+
+    public boolean isValid(String value, ConstraintValidatorContext ctx) {
+        return value != null && value.length() >= 8;
+    }
+}
+
+Step 3: Use Annotation
+@StrongPassword
+private String password;
+
+Output:
+Weak password
+
+7. GROUP VALIDATION (IMPORTANT FOR INTERVIEW)
+==============================================
+
+7.1 Validation Groups:
+public interface CreateGroup {}
+public interface UpdateGroup {}
+
+@NotNull(groups = UpdateGroup.class)
+private Long id;
+
+@PostMapping("/create")
+public void create(@Validated(CreateGroup.class) @RequestBody UserDto user) {}
+
+8. METHOD-LEVEL VALIDATION
+===========================
+
+8.1 @Validated on Service:
+@Service
+@Validated
+public class UserService {
+
+    public void save(@NotNull String name) {
+    }
+}
+
+9. SPRING BOOT VALIDATION CONFIGURATION
+=========================================
+
+9.1 Dependency:
+spring-boot-starter-validation
+
+📌 Automatically included in spring-boot-starter-web
+
+9.2 application.properties:
+server.error.include-message=always
+
+10. REAL-TIME BEST PRACTICES
+==============================
+
+✔ Use DTOs for validation
+✔ Never validate entities directly in APIs
+✔ Use global exception handler
+✔ Avoid manual validations
+✔ Use custom validators for complex rules
+✔ Return meaningful error messages
+
+11. SPRING VALIDATION VS MANUAL VALIDATION
+===========================================
+| Spring Validation | Manual Validation |
+| ----------------- | ----------------- |
+| Declarative       | Imperative        |
+| Less code         | More boilerplate  |
+| Reusable          | Scattered         |
+| Standardized      | Error-prone       |
+
+12. MOST ASKED INTERVIEW QUESTIONS
+===================================
+
+12.1 Difference between @Valid and @Validated?
+
+@Valid → basic validation
+
+@Validated → supports groups
+
+12.2 Is validation done before controller method execution?
+
+✅ Yes
+
+12.3 Can validation be applied on GET request?
+
+❌ No body → no validation
+
+12.4 Is validation thread-safe?
+
+✅ Yes (stateless)
+
+13. TRICKY INTERVIEW QUESTIONS
+===============================
+| Question                                       | Answer |
+| ---------------------------------------------- | ------ |
+| Is @NotNull same as @NotEmpty?                 | ❌      |
+| Is validation applied on private fields?       | ✅      |
+| Does @Valid work without @RequestBody?         | ❌      |
+| Can we validate path variables?                | ✅      |
+| Is Hibernate Validator mandatory?              | ❌      |
+| Does validation work on internal method calls? | ❌      |

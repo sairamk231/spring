@@ -1,0 +1,277 @@
+1. SPRING ORM OVERVIEW
+======================
+
+1.1 Definition:
+Spring ORM (Object Relational Mapping) is a Spring module that provides integration support between Spring and ORM frameworks like Hibernate, JPA, JDO, MyBatis, simplifying database access and transaction management.
+
+1.2 Why Spring ORM:
+Reduces boilerplate JDBC/ORM code
+Unified exception handling
+Easy transaction management
+Loose coupling between persistence and business layers
+Seamless integration with Spring Boot
+
+1.3 ORM Concept:
+ORM maps:
+Java objects → Database tables
+Fields → Columns
+Objects → Rows
+
+📌 Eliminates manual SQL handling.
+
+2. SPRING ORM ARCHITECTURE
+===========================
+
+2.1 Key Components:
+DataSource
+SessionFactory / EntityManagerFactory
+ORM Framework (Hibernate/JPA)
+Spring Transaction Manager
+
+2.2 Spring ORM Flow:
+Controller calls Service
+Service calls DAO/Repository
+ORM framework interacts with DB
+Spring manages transactions
+Result returned as Java objects
+
+3. SPRING ORM WITH HIBERNATE
+==============================
+
+3.1 Hibernate Integration:
+Definition:
+
+Spring ORM provides HibernateTemplate / SessionFactory support for integrating Hibernate.
+
+3.2 Entity Mapping:
+Example:
+@Entity
+@Table(name = "employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue
+    private int id;
+    private String name;
+}
+
+Explanation:
+@Entity → persistent class
+@Table → DB table mapping
+@Id → primary key
+
+3.3 Hibernate Configuration (XML – Legacy):
+<bean id="sessionFactory"
+      class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="packagesToScan" value="com.app.entity"/>
+</bean>
+
+📌 Mostly seen in legacy projects.
+
+3.4 DAO using Hibernate:
+@Repository
+public class EmployeeDao {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    public void save(Employee emp) {
+        sessionFactory.getCurrentSession().save(emp);
+    }
+}
+
+Output:
+Employee record inserted
+
+4. SPRING ORM WITH JPA (MOST IMPORTANT)
+=========================================
+
+4.1 JPA Integration:
+Definition:
+Spring ORM integrates Java Persistence API (JPA) using EntityManager.
+
+📌 Spring Data JPA is built on top of Spring ORM.
+
+4.2 Entity Example:
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+}
+
+4.3 Repository Layer:
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+}
+
+Explanation:
+No implementation needed
+CRUD methods auto-generated
+
+4.4 Service Layer:
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository repo;
+
+    public User save(User user) {
+        return repo.save(user);
+    }
+}
+
+4.5 Controller:
+@RestController
+public class UserController {
+
+    @PostMapping("/users")
+    public User save(@RequestBody User user) {
+        return service.save(user);
+    }
+}
+
+Output:
+User saved successfully (JSON response)
+
+5. TRANSACTION MANAGEMENT (CORE OF SPRING ORM)
+================================================
+
+5.1 @Transactional:
+Definition:
+Manages database transactions declaratively.
+
+Example:
+@Service
+@Transactional
+public class OrderService {
+    public void placeOrder() {
+        // DB operations
+    }
+}
+
+Explanation:
+Begins transaction
+Commits on success
+Rolls back on RuntimeException
+
+5.2 Rollback Rules
+RuntimeException → rollback
+Checked exception → no rollback (default)
+@Transactional(rollbackFor = Exception.class)
+
+5.3 Transaction Propagation:
+| Type          | Meaning                    |
+| ------------- | -------------------------- |
+| REQUIRED      | Join or create transaction |
+| REQUIRES_NEW  | New transaction            |
+| SUPPORTS      | Optional transaction       |
+| NOT_SUPPORTED | No transaction             |
+
+
+6. SPRING ORM EXCEPTION HANDLING
+=================================
+
+6.1 DataAccessException:
+Definition:
+Spring ORM converts ORM/JDBC exceptions into unchecked exceptions.
+
+Examples:
+DataIntegrityViolationException
+DuplicateKeyException
+📌 Unified exception hierarchy.
+
+7. SPRING ORM WITH SPRING BOOT
+================================
+
+7.1 Dependencies:
+spring-boot-starter-data-jpa
+mysql-connector-j
+
+7.2 application.properties:
+spring.datasource.url=jdbc:mysql://localhost:3306/test
+spring.datasource.username=root
+spring.datasource.password=pass
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+7.3 Auto Configuration:
+Auto configures DataSource
+Auto creates EntityManagerFactory
+Auto configures TransactionManager
+
+📌 No XML required.
+
+8. ORM FETCHING STRATEGIES
+============================
+
+8.1 Lazy Fetch:
+@OneToMany(fetch = FetchType.LAZY)
+
+✔ Loads data when accessed
+
+8.2 Eager Fetch:
+@OneToMany(fetch = FetchType.EAGER)
+
+⚠️ Can cause performance issues
+
+9. ORM CASCADING
+=================
+
+9.1 Cascade Types:
+ALL
+PERSIST
+MERGE
+REMOVE
+@OneToMany(cascade = CascadeType.ALL)
+
+10. SPRING ORM VS JDBC
+=======================
+
+| Spring ORM        | JDBC             |
+| ----------------- | ---------------- |
+| Object-based      | SQL-based        |
+| Less code         | More boilerplate |
+| Automatic mapping | Manual mapping   |
+| Easy transactions | Manual           |
+
+11. REAL-TIME BEST PRACTICES
+==============================
+
+✔ Prefer Spring Data JPA
+✔ Use DTOs instead of entities in APIs
+✔ Avoid EAGER fetching
+✔ Use pagination
+✔ Proper transaction boundaries
+✔ Handle N+1 problem
+
+12. MOST ASKED INTERVIEW QUESTIONS
+===================================
+
+12.1 What is Spring ORM?
+Spring module that integrates ORM frameworks with Spring.
+
+12.2 Difference between Hibernate and JPA?
+Hibernate = implementation
+JPA = specification
+
+12.3 Why use @Transactional at service layer?
+Defines business transaction boundary.
+
+12.4 Is Spring ORM mandatory?
+❌ No, but highly recommended.
+
+13. TRICKY INTERVIEW QUESTIONS
+| Question                                          | Answer      |
+| ------------------------------------------------- | ----------- |
+| Does @Transactional work on private methods?      | ❌ No        |
+| Is transaction rolled back for checked exception? | ❌ (default) |
+| Can we use multiple DBs?                          | ✅ Yes       |
+| Is Entity thread-safe?                            | ❌ No        |
+| Can we use Hibernate without Spring ORM?          | ✅ Yes       |
+| Does Spring ORM manage connections?               | ✅ Yes       |

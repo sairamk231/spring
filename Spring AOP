@@ -1,0 +1,270 @@
+Definition:
+Spring AOP is a programming paradigm used to separate cross-cutting concerns (like logging, security, transactions) from business logic.
+
+👉 It helps keep code:
+Clean
+Modular
+Maintainable
+
+Why Spring AOP?
+Cross-cutting concerns are logic that cuts across multiple modules.
+
+Examples:
+Logging
+Transaction management
+Security
+Auditing
+Performance monitoring
+
+📌 Without AOP → code duplication
+📌 With AOP → reusable and centralized logic
+
+Core AOP Terminology (VERY IMPORTANT)
+Aspect:
+Definition:
+
+An Aspect is a class that contains cross-cutting logic.
+
+Example:
+@Aspect
+@Component
+public class LoggingAspect {
+}
+
+Key Points:
+Defined using @Aspect
+Contains advice + pointcuts
+Managed as Spring bean
+
+Join Point:
+Definition:
+
+A Join Point is a specific point during program execution where advice can be applied
+(e.g., method execution).
+
+Key Points:
+In Spring AOP → only method execution
+Provided via JoinPoint object
+
+Advice:
+Definition:
+
+Advice is the action taken by an aspect at a particular join point.
+Types of Advice:
+@Before
+@After
+@AfterReturning
+@AfterThrowing
+@Around
+
+Pointcut:
+Definition:
+
+A Pointcut is an expression that selects join points where advice should run.
+
+Example:
+execution(* com.app.service.*.*(..))
+
+Meaning:
+Any return type
+Any method
+Any parameters
+Inside service package
+
+Weaving:
+Definition:
+Weaving is the process of applying aspects to target objects.
+
+Key Points:
+Happens at runtime in Spring AOP
+Uses proxy mechanism
+
+Proxy:
+Definition:
+Spring AOP works using proxy objects.
+
+Types:
+JDK Dynamic Proxy → if interface exists
+CGLIB Proxy → if no interface
+
+📌 Spring Boot uses CGLIB by default.
+
+🔹 AOP ADVICE TYPES (WITH EXAMPLES)
+1️⃣ @Before Advice
+Definition:
+
+Executes before the target method runs.
+
+Example:
+@Aspect
+@Component
+public class LoggingAspect {
+
+    @Before("execution(* com.app.service.PaymentService.pay(..))")
+    public void beforeAdvice() {
+        System.out.println("Before payment execution");
+    }
+}
+
+@Service
+public class PaymentService {
+    public void pay() {
+        System.out.println("Payment done");
+    }
+}
+
+Output:
+Before payment execution
+Payment done
+
+Key Points:
+Used for validation, logging
+Cannot stop method execution
+
+2️⃣ @After Advice
+Definition:
+
+Executes after method execution (always), regardless of success or exception.
+
+Example:
+@After("execution(* com.app.service.PaymentService.pay(..))")
+public void afterAdvice() {
+    System.out.println("After payment execution");
+}
+
+Output:
+Payment done
+After payment execution
+
+3️⃣ @AfterReturning Advice
+Definition:
+
+Executes only if method returns successfully.
+
+Example:
+@AfterReturning(
+    pointcut = "execution(* com.app.service.PaymentService.pay(..))",
+    returning = "result"
+)
+public void afterReturning(Object result) {
+    System.out.println("Payment Result: " + result);
+}
+
+public String pay() {
+    return "SUCCESS";
+}
+
+Output:
+Payment Result: SUCCESS
+
+4️⃣ @AfterThrowing Advice
+Definition:
+
+Executes only when method throws an exception.
+
+Example:
+@AfterThrowing(
+    pointcut = "execution(* com.app.service.PaymentService.pay(..))",
+    throwing = "ex"
+)
+public void afterThrowing(Exception ex) {
+    System.out.println("Exception occurred: " + ex.getMessage());
+}
+
+Output:
+Exception occurred: Insufficient balance
+
+5️⃣ @Around Advice (MOST IMPORTANT)
+Definition:
+
+Executes before and after method execution and can control method execution.
+
+Example:
+@Around("execution(* com.app.service.PaymentService.pay(..))")
+public Object aroundAdvice(ProceedingJoinPoint pjp) throws Throwable {
+
+    System.out.println("Before method");
+    Object result = pjp.proceed();
+    System.out.println("After method");
+
+    return result;
+}
+
+Output:
+Before method
+Payment done
+After method
+
+Key Points:
+Most powerful advice
+Can stop method execution
+Used for transactions, performance monitoring
+
+🔹 POINTCUT EXPRESSIONS (IMPORTANT)
+execution()
+execution(* com.app.service.*.*(..))
+
+Breakdown:
+* → any return type
+* → any method
+(..) → any parameters
+
+within()
+within(com.app.service.*)
+
+@annotation()
+@annotation(org.springframework.transaction.annotation.Transactional)
+
+🔹 AOP CONFIGURATION
+Enable AOP:
+@EnableAspectJAutoProxy
+
+📌 In Spring Boot → enabled automatically.
+AOP Dependency:
+spring-boot-starter-aop
+
+🔹 REAL-TIME USE CASES (INTERVIEW GOLD)
+Logging:
+Method entry/exit logs
+Request/response logging
+
+Transaction Management:
+@Transactional uses AOP internally
+
+Security:
+Role-based access
+Authorization checks
+Performance Monitoring:
+Execution time calculation
+
+🔥 MOST ASKED INTERVIEW QUESTIONS
+Q1: What is Spring AOP?
+
+Aspect-oriented programming to handle cross-cutting concerns separately.
+
+Q2: Difference between Spring AOP and AspectJ?
+| Spring AOP   | AspectJ                       |
+| ------------ | ----------------------------- |
+| Runtime      | Compile-time                  |
+| Proxy-based  | Bytecode weaving              |
+| Only methods | Methods, fields, constructors |
+
+
+Q3: Which advice is most powerful?
+@Around
+
+Q4: Can AOP work on private methods?
+❌ No (proxy limitation)
+
+Q5: Why @Transactional works only on public methods?
+Because Spring AOP uses proxies.
+
+🔥 TRICKY INTERVIEW QUESTIONS (VERY IMPORTANT)
+| Question                               | Answer                    |
+| -------------------------------------- | ------------------------- |
+| Can Spring AOP intercept constructors? | ❌ No                      |
+| Does self-invocation work with AOP?    | ❌ No                      |
+| Is AOP applied to static methods?      | ❌ No                      |
+| Can we have multiple aspects?          | ✅ Yes                     |
+| Execution order of aspects?            | Controlled using `@Order` |
+| Is AOP thread-safe?                    | Depends on bean           |

@@ -1,0 +1,280 @@
+1. SPRING SCHEDULING
+=====================
+
+1.1 Definition:
+Spring Scheduling allows you to run tasks automatically at fixed intervals or specific times without manual triggering.
+
+📌 Used for:
+Cron jobs
+Batch processing
+Report generation
+Cleanup tasks
+
+1.2 Key Annotations:
+Annotation	            Purpose
+-----------            -------------
+@EnableScheduling	      Enable scheduling
+@Scheduled	            Define scheduled task
+
+1.3 Enabling Scheduling:
+@Configuration
+@EnableScheduling
+public class SchedulerConfig {
+}
+
+📌 In Spring Boot, adding @EnableScheduling is enough.
+
+2. @Scheduled ANNOTATION
+==========================
+
+2.1 @Scheduled(fixedRate):
+Definition:
+Runs method at a fixed interval, measured from start time.
+
+Example:
+@Component
+public class FixedRateJob {
+
+    @Scheduled(fixedRate = 5000)
+    public void run() {
+        System.out.println("Fixed rate task running");
+    }
+}
+
+Explanation:
+Runs every 5 seconds
+Next execution does not wait for previous to finish
+
+Output:
+Fixed rate task running
+
+2.2 @Scheduled(fixedDelay):
+Definition:
+
+Runs method after fixed delay, measured from completion time.
+
+Example:
+@Scheduled(fixedDelay = 5000)
+public void run() {
+    System.out.println("Fixed delay task running");
+}
+
+Explanation:
+
+Waits 5 seconds after task finishes
+
+Output:
+Fixed delay task running
+
+2.3 @Scheduled(initialDelay):
+Definition:
+
+Delays first execution of scheduled task.
+
+Example:
+@Scheduled(initialDelay = 10000, fixedRate = 5000)
+public void startLater() {
+    System.out.println("Started after delay");
+}
+
+Output:
+Started after delay
+
+2.4 @Scheduled(cron):
+Definition:
+
+Executes task using cron expression.
+
+Example:
+@Scheduled(cron = "0 0 10 * * ?")
+public void dailyTask() {
+    System.out.println("Task executed at 10 AM daily");
+}
+
+Cron Format:
+second minute hour day month weekday
+
+2.5 Cron Expression Examples:
+| Expression      | Meaning           |
+| --------------- | ----------------- |
+| `0 * * * * ?`   | Every minute      |
+| `0 0 * * * ?`   | Every hour        |
+| `0 0 0 * * ?`   | Every day         |
+| `0 0 9 ? * MON` | Every Monday 9 AM |
+
+3. THREADING IN SCHEDULING
+===========================
+3.1 Default Behavior:
+
+Spring uses single-threaded executor
+Tasks run sequentially
+📌 Long task can delay next execution.
+
+3.2 Custom Task Scheduler:
+@Configuration
+public class SchedulerConfig {
+
+    @Bean
+    public TaskScheduler taskScheduler() {
+        ThreadPoolTaskScheduler scheduler =
+            new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(5);
+        return scheduler;
+    }
+}
+
+Key Points:
+Enables parallel execution
+Improves performance
+
+4. SPRING ASYNC
+================
+
+4.1 Definition:
+Spring Async allows methods to run asynchronously in a separate thread, so caller does not wait for completion.
+
+📌 Used for:
+Email sending
+Background processing
+Long-running tasks
+
+4.2 Key Annotations:
+Annotation	      Purpose
+-----------      -------------
+@EnableAsync	    Enable async support
+@Async	          Mark method async
+
+4.3 Enabling Async:
+@Configuration
+@EnableAsync
+public class AsyncConfig {
+}
+
+5. @Async ANNOTATION
+=====================
+
+5.1 Basic @Async Example:
+@Service
+public class EmailService {
+
+    @Async
+    public void sendEmail() {
+        System.out.println("Email sent by: " +
+            Thread.currentThread().getName());
+    }
+}
+
+Controller:
+@GetMapping("/send")
+public String send() {
+    emailService.sendEmail();
+    return "Request processed";
+}
+
+Output:
+Request processed
+Email sent by: task-1
+
+Explanation:
+Controller returns immediately
+Method runs in background thread
+
+5.2 Async with Return Value:
+Example:
+@Async
+public CompletableFuture<String> process() {
+    return CompletableFuture.completedFuture("Done");
+}
+
+Key Points:
+Supports Future & CompletableFuture
+Useful for chaining async tasks
+
+6. CUSTOM ASYNC EXECUTOR
+=========================
+
+6.1 Default Executor:
+SimpleAsyncTaskExecutor
+Creates new thread every time (not ideal)
+
+6.2 Custom Executor (BEST PRACTICE):
+@Configuration
+@EnableAsync
+public class AsyncConfig {
+
+    @Bean
+    public Executor taskExecutor() {
+        ThreadPoolTaskExecutor executor =
+            new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("Async-");
+        executor.initialize();
+        return executor;
+    }
+}
+
+7. SCHEDULING + ASYNC TOGETHER
+================================
+
+7.1 Use Case:
+Run scheduled jobs asynchronously.
+
+Example:
+@Async
+@Scheduled(fixedRate = 5000)
+public void asyncScheduledTask() {
+    System.out.println("Async scheduled task");
+}
+
+Output:
+Async scheduled task
+
+📌 Prevents blocking scheduler thread.
+
+8. LIMITATIONS & IMPORTANT RULES
+=================================
+
+8.1 Proxy Limitation:
+@Async does NOT work on private methods
+@Async does NOT work with self-invocation
+
+8.2 Transaction + Async:
+@Transactional and @Async run in different threads
+Transaction context is NOT shared
+
+9. REAL-TIME USE CASES
+=======================
+
+✔ Scheduled DB cleanup
+✔ Report generation
+✔ Background email notifications
+✔ Cache refresh jobs
+✔ File processing
+
+10. MOST ASKED INTERVIEW QUESTIONS
+===================================
+
+10.1 Difference between fixedRate and fixedDelay?
+Start time vs completion time.
+
+10.2 Is @Scheduled thread-safe?
+Depends on task code.
+
+10.3 Does @Async create new thread?
+✅ Yes (via executor).
+
+10.4 Can we use @Async without @EnableAsync?
+❌ No
+
+11. TRICKY INTERVIEW QUESTIONS (VERY IMPORTANT)
+================================================
+| Question                            | Answer                |
+| ----------------------------------- | --------------------- |
+| Does @Async work on static methods? | ❌                     |
+| Can @Scheduled throw exception?     | ✅ (task stops)        |
+| Can cron run in parallel?           | ❌ (default)           |
+| Is async method transactional?      | ❌                     |
+| Can we schedule async REST calls?   | ✅                     |
+| Does @Scheduled work in cluster?    | ❌ (runs on each node) |

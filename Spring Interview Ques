@@ -59,3 +59,212 @@ c) Field Injection (Annotation-based)
 Dependencies injected directly into fields using annotations like @Autowired.
 Common in Spring Boot.
 
+🌱 Spring Core
+1️⃣ Spring Beans
+Definition
+
+A Spring Bean is an object that is created, configured, and managed by the Spring IoC container.
+
+Key Points
+
+Managed by ApplicationContext
+
+Defined via annotations, Java config, or XML
+
+Supports dependency injection
+
+Lifecycle managed by Spring
+
+2️⃣ Bean Scopes
+Definition
+
+Bean scope defines how many instances of a bean are created and how long they live.
+
+Types & Key Points
+
+singleton (default) – one instance per container
+
+prototype – new instance each request
+
+request – one per HTTP request
+
+session – one per HTTP session
+
+application – one per ServletContext
+⚠️ Scope ≠ thread safety
+
+3️⃣ Bean Lifecycle
+Definition
+The bean lifecycle describes the creation → initialization → usage → destruction of a bean.
+
+Key Points
+Instantiation
+Dependency Injection
+Initialization (@PostConstruct)
+Ready to use
+Destruction (@PreDestroy)
+Destroy not called for prototype beans
+
+4️⃣ Autowiring
+Definition
+Autowiring allows Spring to automatically inject dependencies into beans.
+Key Points
+Types: constructor, setter, field
+Constructor injection is recommended
+@Qualifier resolves multiple bean conflicts
+Reduces boilerplate code
+
+5️⃣ Spring Annotations
+Definition
+Annotations are metadata used to configure Spring behavior.
+
+Key Points (Common Annotations)
+@Component, @Service, @Repository
+@Controller, @RestController
+@Autowired, @Qualifier
+@Configuration, @Bean
+@Value
+
+🚀 Spring Boot
+6️⃣ Spring vs Spring Boot
+Definition
+Spring Boot is an opinionated framework built on top of Spring to simplify configuration and deployment.
+
+Key Points
+No XML configuration
+Embedded servers (Tomcat)
+Auto configuration
+Faster development
+
+7️⃣ Spring Boot Architecture
+Definition
+Architecture that enables auto-configured, standalone Spring applications.
+
+Key Points
+@SpringBootApplication
+Auto Configuration
+Starter Dependencies
+Embedded Server
+Externalized configuration
+
+8️⃣ Starter Dependencies
+Definition
+Predefined dependency bundles that simplify dependency management.
+Key Points
+Reduce version conflicts
+
+Examples:
+spring-boot-starter-web
+spring-boot-starter-data-jpa
+spring-boot-starter-security
+Can exclude unwanted dependencies
+
+9️⃣ Auto Configuration
+Definition:
+Automatically configures Spring beans based on classpath, properties, and conditions.
+
+Key Points:
+Enabled by @EnableAutoConfiguration
+Conditional annotations (@ConditionalOnClass)
+Can be disabled or customized
+
+🔟 Application Properties / YML
+Definition:
+External configuration files for application behavior.
+
+Key Points:
+application.properties or application.yml
+Supports environment-specific configs
+Property hierarchy & priority order
+YML is more readable for complex configs
+
+1️⃣1️⃣ REST API Development
+Definition:
+Developing stateless APIs using HTTP methods.
+
+Key Points:
+Uses @RestController
+HTTP methods: GET, POST, PUT, DELETE
+JSON as standard data format
+Follows REST principles
+
+1️⃣2️⃣ Exception Handling (Spring Boot)
+Definition:
+Centralized way to handle exceptions in REST APIs.
+
+Key Points:
+@RestControllerAdvice
+@ExceptionHandler
+Global error handling
+Clean and consistent responses
+
+1️⃣3️⃣ Validation
+Definition
+Validates request data using Bean Validation (JSR-380).
+
+Key Points:
+Annotations: @NotNull, @Size, @Email
+Enabled using @Valid
+Reduces manual checks
+Integrated with REST APIs
+
+1️⃣4️⃣ Actuator
+Definition
+
+Provides production-ready monitoring endpoints.
+
+Key Points:
+Health checks
+Metrics
+Environment info
+Needs security in production
+Endpoints under /actuator
+
+1️⃣5️⃣ Profiles
+Definition:
+Profiles allow environment-specific configurations.
+
+Key Points:
+dev, test, prod
+Activate via properties or command line
+Multiple profiles can be active
+Avoids config duplication
+
+🌐 Microservices (Basic)
+1️⃣6️⃣ Monolithic vs Microservices
+Definition:
+Architectural styles for application development.
+
+Key Points:
+Monolithic → single codebase
+Microservices → independent services
+Microservices scale independently
+Loose coupling
+
+1️⃣7️⃣ RESTful Web Services
+Definition:
+Web services based on REST principles.
+Key Points
+Stateless
+Resource-oriented
+Uses HTTP methods
+Lightweight communication
+
+1️⃣8️⃣ Spring Boot with Microservices
+Definition
+Using Spring Boot to build independent, deployable microservices.
+
+Key Points:
+Fast startup
+Independent DB per service
+Easy REST integration
+Cloud-ready
+
+1️⃣9️⃣ Inter-Service Communication
+Definition
+Communication between microservices.
+Key Points:
+Synchronous: REST (RestTemplate, WebClient)
+Asynchronous: Messaging (Kafka, RabbitMQ)
+Avoid tight coupling
+Handle failures gracefully

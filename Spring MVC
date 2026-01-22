@@ -1,0 +1,309 @@
+1. SPRING MVC OVERVIEW
+=======================
+
+1.1 Definition:
+Spring MVC (Model–View–Controller) is a web framework of the Spring ecosystem that follows the MVC design pattern to build loosely coupled, scalable, and testable web applications.
+
+1.2 Why Spring MVC:
+Clean separation of concerns
+Easy integration with Spring Core, AOP, Security
+Supports RESTful services
+Flexible view technologies
+Production-ready framework
+
+1.3 MVC Pattern:
+Model:
+Definition:
+Represents application data and business logic.
+Examples:
+POJO
+DTO
+Entity
+
+View:
+Definition:
+Responsible for rendering UI.
+
+Examples:
+JSP
+Thymeleaf
+HTML / JSON
+
+Controller:
+Definition:
+Handles HTTP requests, interacts with model, and returns view/response.
+
+2. SPRING MVC ARCHITECTURE
+============================
+
+2.1 DispatcherServlet:
+Definition:
+Central Front Controller that handles all incoming requests.
+
+Key Points:
+First entry point
+Configured automatically in Spring Boot
+Delegates to controller
+
+2.2 Spring MVC Request Flow:
+Client sends request
+DispatcherServlet receives request
+HandlerMapping finds controller
+Controller processes request
+Returns Model/View or Response
+ViewResolver resolves view
+Response sent to client
+
+3. CONTROLLER LAYER
+====================
+
+3.1 @Controller:
+Definition:
+Marks class as MVC controller that returns views.
+
+Example:
+@Controller
+public class HomeController {
+
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
+}
+
+Explanation:
+Returns logical view name
+ViewResolver maps to JSP/HTML
+
+3.2 @RestController:
+Definition:
+Combination of:
+@Controller + @ResponseBody
+
+Example:
+@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello Spring MVC";
+    }
+}
+
+Output:
+Hello Spring MVC
+Key Points:
+Used for REST APIs
+Returns JSON/String directly
+
+3.3 Difference: @Controller vs @RestController:
+@Controller	@RestController
+Returns view	Returns data
+Used for MVC	Used for REST
+Needs @ResponseBody	Auto included
+
+4. REQUEST MAPPING
+===================
+4.1 @RequestMapping:
+Definition:
+
+Maps HTTP requests to handler methods.
+
+Example:
+@RequestMapping(value = "/test", method = RequestMethod.GET)
+public String test() {
+    return "test";
+}
+
+4.2 Shortcut Mapping Annotations:
+@GetMapping
+@PostMapping
+@PutMapping
+@DeleteMapping
+@PatchMapping
+
+4.3 Example:
+@GetMapping("/user")
+public String getUser() {
+    return "User fetched";
+}
+
+Output:
+User fetched
+
+5. HANDLING REQUEST DATA
+==========================
+
+5.1 @RequestParam:
+Definition:
+Extracts query parameters from URL.
+
+Example:
+@GetMapping("/user")
+public String user(@RequestParam String name) {
+    return "User: " + name;
+}
+
+URL:
+/user?name=Sai
+
+Output:
+User: Sai
+
+5.2 @PathVariable:
+Definition:
+Extracts path variable from URL.
+
+Example:
+@GetMapping("/user/{id}")
+public String user(@PathVariable int id) {
+    return "ID: " + id;
+}
+
+URL:
+/user/101
+
+Output:
+ID: 101
+
+5.3 @RequestBody:
+Definition:
+
+Maps HTTP request body to Java object.
+
+Example:
+@PostMapping("/save")
+public User save(@RequestBody User user) {
+    return user;
+}
+
+Output:
+JSON response of User
+
+5.4 @ResponseBody:
+Definition:
+
+Writes return value directly to HTTP response body.
+
+📌 Included by default in @RestController.
+
+6. MODEL HANDLING
+==================
+
+6.1 Model:
+@GetMapping("/data")
+public String data(Model model) {
+    model.addAttribute("msg", "Hello MVC");
+    return "view";
+}
+
+6.2 ModelAndView:
+@GetMapping("/mv")
+public ModelAndView test() {
+    ModelAndView mv = new ModelAndView("view");
+    mv.addObject("msg", "Hello");
+    return mv;
+}
+
+7. VIEW RESOLUTION
+===================
+
+7.1 ViewResolver:
+Definition:
+
+Resolves logical view name to actual view.
+
+Example:
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+8. EXCEPTION HANDLING
+======================
+
+8.1 @ExceptionHandler:
+@ExceptionHandler(Exception.class)
+public String handle() {
+    return "error";
+}
+
+8.2 @ControllerAdvice / @RestControllerAdvice:
+Definition:
+
+Provides global exception handling.
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+}
+
+9. VALIDATION
+==============
+
+9.1 @Valid:
+@PostMapping("/save")
+public void save(@Valid @RequestBody User user) {}
+
+9.2 Validation Annotations:
+@NotNull
+@Size
+@Email
+
+10. RESPONSE HANDLING
+======================
+
+10.1 ResponseEntity:
+return ResponseEntity.ok(data);
+
+10.2 @ResponseStatus:
+@ResponseStatus(HttpStatus.NOT_FOUND)
+
+11. SPRING MVC vs SPRING BOOT MVC
+==================================
+
+Spring MVC	Spring Boot MVC
+Manual config	Auto config
+External server	Embedded server
+More setup	Faster
+
+12. THREAD SAFETY
+==================
+
+12.1 Controller Scope:
+
+Controllers are singleton
+Must be stateless
+Avoid shared mutable variables
+
+13. REAL-TIME BEST PRACTICES
+=============================
+
+✔ Use @RestController for APIs
+✔ Keep controllers thin
+✔ Use DTOs
+✔ Centralize exception handling
+✔ Validate input
+✔ Avoid business logic in controller
+
+14. MOST ASKED INTERVIEW QUESTIONS
+===================================
+
+14.1 What is DispatcherServlet?
+Front controller of Spring MVC.
+
+14.2 Is Spring MVC thread-safe?
+Framework is safe; developer code decides safety.
+
+14.3 Difference between @RequestParam and @PathVariable?
+Query param vs URL path.
+
+14. Can one controller handle multiple URLs?
+✅ Yes
+
+15. TRICKY INTERVIEW QUESTIONS
+| Question                           | Answer |
+| ---------------------------------- | ------ |
+| Are controllers singleton?         | ✅ Yes  |
+| Can @RequestBody be used with GET? | ❌ No   |
+| Does MVC support async?            | ✅ Yes  |
+| Is Model thread-safe?              | ❌ No   |
+| Is DispatcherServlet mandatory?    | ✅ Yes  |
+| Can REST and MVC coexist?          | ✅ Yes  |

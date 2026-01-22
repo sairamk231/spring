@@ -1,1 +1,280 @@
+1️⃣ What is Spring Configuration?
+✅ Definition
+
+Spring Configuration is the process of defining beans, their dependencies, and application behavior, so that the Spring IoC container can create and manage objects.
+
+👉 In simple words:
+Configuration tells Spring what to create, how to create, and how to wire beans.
+
+2️⃣ Types of Spring Configuration (VERY IMPORTANT)
+
+Spring supports 4 types of configuration:
+XML Configuration
+Annotation-Based Configuration
+Java-Based Configuration (@Configuration)
+Spring Boot Auto Configuration
+
+🔹 3️⃣ XML-BASED CONFIGURATION (Legacy but Interview Important)
+Definition
+
+Beans are defined in XML files.
+
+Example
+beans.xml
+<beans>
+    <bean id="employee" class="com.app.Employee"/>
+</beans>
+
+Java Class
+public class Employee {
+    public void show() {
+        System.out.println("Employee Bean from XML");
+    }
+}
+
+Main Class
+ApplicationContext context =
+    new ClassPathXmlApplicationContext("beans.xml");
+
+Employee emp = context.getBean(Employee.class);
+emp.show();
+
+Output
+Employee Bean from XML
+
+Key Points
+Verbose and hard to maintain
+No compile-time safety
+Rarely used now (legacy projects)
+
+🔹 4️⃣ ANNOTATION-BASED CONFIGURATION
+Definition
+Uses annotations instead of XML.
+
+4.1 @ComponentScan
+@Configuration
+@ComponentScan("com.app")
+public class AppConfig {}
+
+✔ Automatically scans and registers beans.
+
+4.2 @Component
+@Component
+public class Employee {
+    public void show() {
+        System.out.println("Employee Bean via Annotation");
+    }
+}
+
+Output
+Employee Bean via Annotation
+
+Key Points
+Less configuration
+Cleaner code
+Uses classpath scanning
+
+🔹 5️⃣ JAVA-BASED CONFIGURATION (MOST IMPORTANT)
+Definition
+
+Configuration using Java classes instead of XML.
+
+5.1 @Configuration
+Definition
+Marks a class as configuration class.
+
+@Configuration
+public class AppConfig {
+}
+
+📌 Spring treats this class as bean factory.
+
+5.2 @Bean
+Definition
+Used to define a bean explicitly.
+
+Example
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Employee employee() {
+        return new Employee();
+    }
+}
+
+Employee emp = context.getBean(Employee.class);
+emp.show();
+
+Output
+Employee Bean Created
+
+Why @Bean?
+✔ Third-party classes
+✔ Custom object creation
+✔ Full control over bean instantiation
+
+🔥 Tricky Interview Point
+
+@Configuration uses CGLIB proxy to ensure:
+Singleton behavior of @Bean methods
+
+5.3 @Import
+Definition
+Used to import one configuration into another.
+
+@Configuration
+@Import(DatabaseConfig.class)
+public class AppConfig {}
+
+5.4 @Profile
+Definition
+Loads configuration based on environment.
+
+@Configuration
+@Profile("dev")
+public class DevConfig {}
+
+spring.profiles.active=dev
+
+🔹 6️⃣ PROPERTY-BASED CONFIGURATION
+6.1 application.properties
+server.port=8081
+app.name=SpringDemo
+
+6.2 application.yml
+server:
+  port: 8081
+
+app:
+  name: SpringDemo
+
+6.3 @Value
+@Value("${app.name}")
+private String appName;
+
+Output
+SpringDemo
+
+6.4 @ConfigurationProperties (BEST PRACTICE)
+@ConfigurationProperties(prefix = "app")
+@Component
+public class AppProperties {
+    private String name;
+}
+
+✔ Type-safe
+✔ Cleaner than @Value
+✔ Preferred in real projects
+
+🔹 7️⃣ DEPENDENCY INJECTION CONFIGURATION
+7.1 Constructor Injection (Recommended)
+@Service
+public class OrderService {
+
+    private final PaymentService paymentService;
+
+    public OrderService(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+}
+
+Key Points
+Immutable
+Easier testing
+No @Autowired required (Spring 4.3+)
+
+7.2 @Qualifier
+@Autowired
+@Qualifier("upiPayment")
+private PaymentService paymentService;
+
+✔ Resolves multiple bean conflict.
+
+🔹 8️⃣ BEAN SCOPE CONFIGURATION
+@Component
+@Scope("prototype")
+public class PrototypeBean {}
+
+Output
+New instance each time
+
+8.1 @Lazy
+@Component
+@Lazy
+public class LazyBean {
+    public LazyBean() {
+        System.out.println("Lazy Bean Created");
+    }
+}
+
+✔ Created only when requested.
+
+🔹 9️⃣ BEAN LIFECYCLE CONFIGURATION
+9.1 @PostConstruct
+@PostConstruct
+public void init() {
+    System.out.println("Bean Initialized");
+}
+
+9.2 @PreDestroy
+@PreDestroy
+public void destroy() {
+    System.out.println("Bean Destroyed");
+}
+
+Output
+Bean Initialized
+Bean Destroyed
+
+⚠️ Not called for prototype beans.
+
+🔹 🔟 SPRING BOOT CONFIGURATION (VERY IMPORTANT)
+10.1 @SpringBootApplication
+@SpringBootApplication
+public class DemoApplication {}
+
+Internally includes:
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+
+10.2 Auto Configuration
+Definition
+Spring Boot configures beans automatically based on:
+Classpath
+Properties
+Conditions
+✔ Zero XML
+✔ Faster startup
+
+10.3 Disable Auto Configuration
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+
+🔥 MOST ASKED INTERVIEW QUESTIONS (WITH ANSWERS)
+Q1. Difference between @Component and @Bean?
+@Component → class-level
+@Bean → method-level
+
+Q2. Why @Configuration is required?
+Ensures singleton behavior using proxy.
+
+Q3. Which configuration is best?
+Java-based + annotations (Spring Boot default)
+
+Q4. Can we use XML and annotations together?
+✅ Yes
+
+Q5. Difference between @Value and @ConfigurationProperties?
+@Value → single value
+@ConfigurationProperties → bulk + type-safe
+
+🔥 TRICKY INTERVIEW QUESTIONS (VERY IMPORTANT)
+| Question                                 | Answer |
+| ---------------------------------------- | ------ |
+| Is @Configuration mandatory for @Bean?   | ✅ Yes  |
+| Does @Bean support dependency injection? | ✅ Yes  |
+| Can @Bean method be private?             | ❌ No   |
+| Is configuration loaded before beans?    | ✅ Yes  |
+| Is @SpringBootApplication mandatory?     | ❌ No   |
 
